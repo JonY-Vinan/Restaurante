@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import Dict, List
 
 class Gestor_Restaurante:
-    def __init__(self, connection_string="postgresql://postgres:pass@localhost:5432/restaurante"):
+    def __init__(self, connection_string="postgresql://postgres:1234@localhost:5432/restaurante-ohana-db"):
         print("Conectando a la base de datos...")
         try:
             self.engine = create_engine(connection_string)

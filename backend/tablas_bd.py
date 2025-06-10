@@ -8,7 +8,7 @@ Base = declarative_base()
 def connectar():
     try:
         from sqlalchemy import create_engine
-        engine = create_engine('postgresql://postgres:pass@localhost:5432/restaurante')
+        engine = create_engine('postgresql://postgres:1234@localhost:5432/restaurante-ohana-db')
         Base.metadata.drop_all(engine)
         Base.metadata.create_all(engine)
         print("Tablas creadas")
