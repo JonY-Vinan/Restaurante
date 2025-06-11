@@ -19,5 +19,5 @@ venv\Scripts\activate       # Windows
 pip install Flask flask-cors SQLAlchemy psycopg2-binary
 
 para iniciar el backend: python app.py
-debe ver: Running on http://127.0.0.1:5000/
+debe ver: Running on htt p://127.0.0.1:5000/
 
