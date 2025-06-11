@@ -1,0 +1,129 @@
+/* Estilos generales */
+body {
+  margin: 0;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+/* Contenedor principal */
+.menu-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+    sans-serif;
+}
+
+/* Título */
+.menu-title {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2.2rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.menu-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #3498db, #2ecc71);
+  border-radius: 2px;
+}
+
+/* Sección de información del menú */
+.menu-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.menu-item {
+  background: #f8f9fa;
+  padding: 1.2rem;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.menu-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item strong {
+  color: #2c3e50;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+/* Estado de carga */
+.loading {
+  text-align: center;
+  color: #7f8c8d;
+  font-style: italic;
+  padding: 2rem;
+  font-size: 1.2rem;
+}
+
+/* Estilos para la fecha y precio */
+.menu-date {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.menu-price {
+  color: #27ae60;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* Notas del menú */
+.menu-notes {
+  grid-column: 1 / -1;
+  font-style: italic;
+  color: #7f8c8d;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .menu-container {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+
+  .menu-title {
+    font-size: 1.8rem;
+  }
+
+  .menu-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-container {
+    padding: 1rem;
+  }
+
+  .menu-title {
+    font-size: 1.5rem;
+  }
+
+  .menu-item {
+    padding: 1rem;
+  }
+}
