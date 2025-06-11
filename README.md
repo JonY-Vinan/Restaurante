@@ -13,6 +13,7 @@ para iniciar frontend: npm run dev
  
 backend:
 python -m venv venv
+para activar maquina virtual de venv
 source venv/bin/activate    # Linux/macOS
 venv\Scripts\activate       # Windows
 
