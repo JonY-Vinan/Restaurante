@@ -78,6 +78,37 @@ def obtener_menu():
     return jsonify({"error": "No hay menú disponible"}), 404
 
 
+@app.route("/api/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    
+    if not data or not all(key in data for key in ['email', 'password']):
+        return jsonify({"error": "Email y contraseña requeridos"}), 400
+    
+    session = Session()
+    try:
+        usuario = session.query(UsuarioDB).filter_by(email=data['email']).first()
+        
+        if not usuario:
+            return jsonify({"error": "Credenciales inválidas"}), 401
+            
+        # Comparación directa de contraseña SIN HASH
+        if usuario.contrasena != data['password']:
+            return jsonify({"error": "Credenciales inválidas"}), 401
+            
+        return jsonify({
+            "user": {
+                "id": usuario.id,
+                "nombre": usuario.nombre,
+                "email": usuario.email,
+                "tipo_usuario": usuario.tipo_usuario.value
+            }
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        session.close()
 
 if __name__ == "__main__":
     app.run(debug=True)
