@@ -1,23 +1,26 @@
-from sqlalchemy import Column, String, Integer, DateTime, Boolean, Float, ForeignKey, JSON
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import Column, String, Integer, DateTime, Boolean, Float, Enum
+from sqlalchemy.orm import declarative_base
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime
+from enum import Enum as PythonEnum
 
 Base = declarative_base()
 
-def connectar():
-    try:
-        from sqlalchemy import create_engine
-        engine = create_engine('postgresql://postgres:1234@localhost:5432/restaurante-ohana-db')
-        Base.metadata.drop_all(engine)
-        Base.metadata.create_all(engine)
-        print("Tablas creadas")
-        conexion = engine.connect()
-        print("✅ Conexión exitosa a la base de datos")
-        return conexion
-    except Exception as error:
-        print("❌ Error al conectar a la base de datos:", error)
-        return None
+class TipoUsuario(PythonEnum):
+    ADMIN = "admin"
+    CLIENTE = "cliente"
+    EMPLEADO = "empleado"
+
+class UsuarioDB(Base):
+    __tablename__ = 'usuario'
+    
+    id = Column(String(6), primary_key=True, default=lambda: uuid.uuid4().hex[:6].upper())
+    nombre = Column(String(50), nullable=False)
+    email = Column(String(100), unique=True, nullable=False)
+    telefono = Column(String(20))
+    tipo_usuario = Column(Enum(TipoUsuario),nullable=False, default=TipoUsuario.CLIENTE)
+    contrasena = Column(String(255), nullable=False)  # Cambiado de contrasena_hash
+
 
 class MenuDelDiaDB(Base):
     __tablename__ = 'menu_del_dia'
@@ -31,5 +34,9 @@ class MenuDelDiaDB(Base):
     incluye = Column(String, default="pan,agua")
     notas = Column(String, default="")
 
-connectar()
-
+    # def set_password(self, password):
+    #    self.password_hash = generate_password_hash(password)
+       
+    # def check_password(self, password):
+    #    return check_password_hash(self.password_hash, password)
+    

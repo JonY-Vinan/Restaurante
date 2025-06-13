@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Home from "./pages/Home";
-import Menu from "./pages/Menu";
-import MobileMenuForm from "./pages/MobileMenuForm";
-
+import Home from "./components/pages/Home";
+import Menu from "./components/pages/Menu";
+import MobileMenuForm from "./components/pages/MobileMenuForm";
+import ResgistroUsuario from "./components/pages/RegistroUsuario";
 function App() {
   return (
     <Router>
@@ -13,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/menu" element={<Menu />} />
+        <Route path="/resgistro" element={<ResgistroUsuario />} />
         <Route path="/mobile/menu" element={<MobileMenuForm />} />
       </Routes>
     </Router>

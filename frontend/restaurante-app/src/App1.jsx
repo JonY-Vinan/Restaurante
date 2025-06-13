@@ -1,53 +1,23 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import "./css/App.css";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Home from "./components/pages/Home";
+import Menu from "./components/pages/Menu";
+import MobileMenuForm from "./components/pages/MobileMenuForm";
+import ResgistroUsuario from "./components/pages/RegistroUsuario";
 function App() {
-  const [menu, setMenu] = useState(null);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/menu")
-      .then((response) => setMenu(response.data))
-      .catch((error) => console.error("Error al obtener el menú", error));
-  }, []);
-
   return (
-    <div className="menu-container">
-      <h1 className="menu-title">Menú del Día</h1>
-      {menu ? (
-        <div className="menu-info">
-          <div className="menu-item">
-            <strong>Fecha:</strong>
-            <span className="menu-date">
-              {new Date(menu.fecha).toLocaleDateString()}
-            </span>
-          </div>
-          <div className="menu-item">
-            <strong>Precio Base:</strong>
-            <span className="menu-price">€{menu.precio_base}</span>
-          </div>
-          <div className="menu-item">
-            <strong>Entrada:</strong> {menu.entrada}
-          </div>
-          <div className="menu-item">
-            <strong>Principal:</strong> {menu.principal}
-          </div>
-          <div className="menu-item">
-            <strong>Postre:</strong> {menu.postre}
-          </div>
-          <div className="menu-item">
-            <strong>Incluye:</strong> {menu.incluye}
-          </div>
-          {menu.notas && (
-            <div className="menu-notes">
-              <strong>Notas:</strong> {menu.notas}
-            </div>
-          )}
-        </div>
-      ) : (
-        <p className="loading">Cargando menú...</p>
-      )}
-    </div>
+    <Router>
+      <nav style={{ display: "flex", gap: "1rem", padding: "1rem" }}>
+        <Link to="/">Inicio</Link>
+        <Link to="/menu">Menú</Link>
+        <Link to="/resgistro">Resgistro</Link>
+      </nav>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/menu" element={<Menu />} />
+        <Route path="/resgistro" element={<ResgistroUsuario />} />
+        <Route path="/mobile/menu" element={<MobileMenuForm />} />
+      </Routes>
+    </Router>
   );
 }
 
