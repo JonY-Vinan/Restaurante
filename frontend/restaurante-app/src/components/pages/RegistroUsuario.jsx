@@ -52,7 +52,7 @@ export default function RegistroUsuario() {
       };
 
       const response = await axios.post(
-        "http://localhost:5000/api/registro",
+        "http://localhost:5000/api/usuarios", // Cambiado de /api/registro a /usuarios
         userData,
         {
           headers: {
@@ -60,7 +60,6 @@ export default function RegistroUsuario() {
           },
         }
       );
-
       if (response.data.error) {
         setMessage({ text: response.data.error, type: "error" });
       } else {
@@ -78,10 +77,18 @@ export default function RegistroUsuario() {
         });
       }
     } catch (error) {
-      const errorMsg =
-        error.response?.data?.error ||
-        error.message ||
-        "Error al registrar usuario";
+      let errorMsg = "Error desconocido.";
+      if (error.response) {
+        // El servidor respondió con un estado fuera del rango 2xx
+        errorMsg = error.response.data.error || "Error del servidor.";
+      } else if (error.request) {
+        // La petición fue hecha pero no se recibió respuesta (ej. servidor caído)
+        errorMsg =
+          "No se pudo conectar al servidor. Intenta de nuevo más tarde.";
+      } else {
+        // Algo más que no fue un error de respuesta ni de petición
+        errorMsg = error.message;
+      }
       setMessage({ text: errorMsg, type: "error" });
     } finally {
       setLoading(false);
