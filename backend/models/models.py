@@ -47,3 +47,34 @@ class MenuDelDiaDB(db.Model):
     platos_postre = db.Column(db.String, nullable=False)
     incluye = db.Column(db.String, default="pan,agua")
     notas = db.Column(db.String, default="")
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'nombre': self.nombre, # O 'platos_entrada', etc. si mantienes el modelo anterior
+            'descripcion': self.descripcion,
+            'precio': self.precio,
+            'disponible': self.disponible,
+            # ... otros campos que quieras exponer
+            'fecha': self.fecha.isoformat() if hasattr(self, 'fecha') else None # Si mantienes el campo fecha
+        }
+
+
+class MenuItemDB(db.Model): # Cambiar el nombre a algo más descriptivo si es un ítem individual
+    __tablename__ = 'menu_items' # Nueva tabla
+    id = db.Column(db.String(6), primary_key=True, default=lambda: uuid.uuid4().hex[:6].upper())
+    nombre = db.Column(db.String(100), nullable=False)
+    descripcion = db.Column(db.String(255)) # Opcional
+    precio = db.Column(db.Float, nullable=False)
+    disponible = db.Column(db.Boolean, default=True)
+    categoria = db.Column(db.String(50)) # Ej. "Entrada", "Principal", "Postre", "Bebida"
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'nombre': self.nombre,
+            'descripcion': self.descripcion,
+            'precio': self.precio,
+            'disponible': self.disponible,
+            'categoria': self.categoria
+        }
