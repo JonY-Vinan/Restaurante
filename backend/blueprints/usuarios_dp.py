@@ -3,9 +3,27 @@ from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import SQLAlchemyError
 from extensions import db
 from models.models import UsuarioDB
-from werkzeug.security import generate_password_hash
-
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import create_access_token 
+from functools import wraps
+from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 usuarios_bp = Blueprint('usuarios_bp', __name__)
+
+
+def admin_required():
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(*args, **kwargs):
+            verify_jwt_in_request() # Verifica que haya un token JWT válido
+            current_user_id = get_jwt_identity()
+            user = UsuarioDB.query.get(current_user_id)
+
+            if user and user.tipo_usuario.value == 'ADMIN': # Comprueba si el tipo_usuario es ADMIN
+                return fn(*args, **kwargs)
+            else:
+                return jsonify({"msg": "Requiere rol de administrador"}), 403 # 403 Forbidden
+        return decorator
+    return wrapper
 
 def validate_usuario_data(data, is_update=False):
     required_fields = ['nombre', 'email', 'password'] if not is_update else []
@@ -105,7 +123,33 @@ def actualizar_usuario(usuario_id):
     except SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-    
+
+@usuarios_bp.route('/usuarios/login', methods=['POST'])
+def login_ususaio():
+    try:
+        data = request.get_json()
+        if not data or not all(key in data for key in ['email', 'password']):
+            return jsonify({'error': 'Email y contraseña requeridos'}), 400
+ 
+        usuario = UsuarioDB.query.filter_by(email=data['email']).first()
+        if not usuario:
+            return jsonify({'error': 'Credenciales inválidas'}), 401
+
+        if not usuario.check_password(data['password']):
+            return jsonify({'error': 'Credenciales inválidas'}), 401
+        access_token = create_access_token(identity=str(usuario.id))
+        return jsonify({
+            'access_token': access_token,
+            'usuario': {                 # <-- ¡Esta clave debe ser 'usuario' (minúsculas)!
+                'id': usuario.id,
+                'nombre': usuario.nombre,
+                'email': usuario.email,
+                'tipo_usuario': usuario.tipo_usuario.value
+            }
+        }), 200
+
+    except SQLAlchemyError as e:
+        return jsonify({'error': str(e)}), 500
 
 @usuarios_bp.route('/usuarios', methods=['POST'])
 def crear_usuario():

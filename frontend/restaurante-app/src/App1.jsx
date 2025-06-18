@@ -1,3 +1,5 @@
+// frontend/src/App.js
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,32 +13,58 @@ import Menu from "./components/pages/Menu";
 import MobileMenuForm from "./components/pages/MobileMenuForm";
 import ResgistroUsuario from "./components/pages/RegistroUsuario";
 import Login from "./components/pages/Login";
-import "./components/css/Navbar.css"; // Archivo CSS para los estilos
+import AdminGestion from "./components/pages/AdminGestion"; // <-- Importar el nuevo componente
+import "./components/css/Navbar.css";
+import axios from "axios";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
-  // Verificar estado de autenticación al cargar
   useEffect(() => {
+    const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
-    if (storedUser) {
+
+    if (storedToken && storedUser) {
       setIsLoggedIn(true);
-      setUser(JSON.parse(storedUser));
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${storedToken}`;
+      } catch (e) {
+        console.error("App.js - useEffect: Error parseando storedUser:", e);
+        setIsLoggedIn(false);
+        setUser(null);
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        delete axios.defaults.headers.common["Authorization"];
+      }
+    } else {
+      setIsLoggedIn(false);
+      setUser(null);
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      delete axios.defaults.headers.common["Authorization"];
     }
   }, []);
 
-  const handleLogin = (userData) => {
+  const handleLogin = (userData, token) => {
     setIsLoggedIn(true);
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", token);
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUser(null);
     localStorage.removeItem("user");
-    return <Navigate to="/" />;
+    localStorage.removeItem("token");
+    delete axios.defaults.headers.common["Authorization"];
+    window.location.href = "/";
   };
 
   return (
@@ -49,6 +77,12 @@ function App() {
         <div className="nav-links">
           <Link to="/">Inicio</Link>
           <Link to="/menu">Menú</Link>
+
+          {/* Enlace a AdminGestion - Condicionalmente mostrado para administradores (luego con lógica de rol) */}
+          {isLoggedIn &&
+            user?.tipo_usuario === "ADMIN" && ( // Añade esta condición para el rol de administrador
+              <Link to="/admin">Administración</Link>
+            )}
 
           {isLoggedIn ? (
             <>
@@ -75,8 +109,20 @@ function App() {
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/registro" element={<ResgistroUsuario />} />
         <Route path="/mobile/menu" element={<MobileMenuForm />} />
-        {/* Redirección para la ruta mal escrita */}
         <Route path="/resgistro" element={<Navigate to="/registro" />} />
+
+        {/* Ruta para el panel de administración */}
+        {/* Aquí puedes añadir una protección de ruta basada en el rol si lo deseas */}
+        <Route
+          path="/admin"
+          element={
+            isLoggedIn && user?.tipo_usuario === "ADMIN" ? (
+              <AdminGestion />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
       </Routes>
     </Router>
   );

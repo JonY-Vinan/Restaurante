@@ -3,7 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../css/App.css";
 
-export default function Login() {
+// Recibe `onLogin` como prop
+export default function Login({ onLogin }) {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -34,7 +35,7 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/login",
+        "http://localhost:5000/api/usuarios/login",
         {
           email: formData.email,
           password: formData.password,
@@ -46,14 +47,16 @@ export default function Login() {
         }
       );
 
-      if (response.data.error) {
-        setMessage({ text: response.data.error, type: "error" });
-      } else {
-        // Guardar datos de usuario en localStorage (sin JWT)
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+      if (response.data.access_token && response.data.usuario) {
+        // Verifica response.data.usuario
+        // Aquí es donde llamas a la función handleLogin de App.js
+        onLogin(response.data.usuario, response.data.access_token); // <-- Envía el objeto 'usuario' y el 'token'
 
-        // Redirigir al dashboard o página principal
-        navigate("/");
+        setMessage({ text: "Inicio de sesión exitoso", type: "success" });
+
+        navigate("/"); // Redirigir al home
+      } else {
+        setMessage({ text: "Respuesta de login inesperada", type: "error" });
       }
     } catch (error) {
       const errorMsg =
