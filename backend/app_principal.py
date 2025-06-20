@@ -1,10 +1,10 @@
 # app_principal.py o app.py (tu archivo principal de la aplicación Flask)
 
 from flask import Flask
-from extensions import db, jwt # Asegúrate de que db y jwt estén importados desde 'extensions.py'
-from blueprints.usuarios_dp import usuarios_bp
-from blueprints.menu_del_dia_bp import menu_del_dia_bp # Asegúrate de importar tu blueprint de menú si tienes uno
-from models.models import UsuarioDB, TipoUsuario # Importa tu modelo UsuarioDB y TipoUsuario
+from .extensions import db, jwt # Asegúrate de que db y jwt estén importados desde 'extensions.py'
+from .blueprints.usuarios_dp import usuarios_bp
+from .blueprints.menu_del_dia_bp import menu_del_dia_bp # Asegúrate de importar tu blueprint de menú si tienes uno
+from .models.models import UsuarioDB, TipoUsuario # Importa tu modelo UsuarioDB y TipoUsuario
 from werkzeug.security import generate_password_hash # Necesitas esto para hashear la contraseña del admin
 import uuid
 def create_app():
@@ -52,6 +52,9 @@ def create_app():
 
     return app
 
-if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app = create_app()
+#     app.run(debug=True)
+
+# Exporta la aplicación para Gunicorn
+app = create_app() # Esta línea es lo que Gunicorn buscará

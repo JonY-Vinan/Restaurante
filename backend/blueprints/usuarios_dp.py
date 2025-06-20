@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import SQLAlchemyError
-from extensions import db
-from models.models import UsuarioDB
+from ..extensions import db
+from ..models.models import UsuarioDB
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token 
 from functools import wraps
