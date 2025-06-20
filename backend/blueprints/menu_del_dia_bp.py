@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity # Importa get_jwt_identity
 from sqlalchemy.exc import SQLAlchemyError
-from ..extensions import db
-from ..models.models import MenuDelDiaDB, UsuarioDB # Importa UsuarioDB para el decorador
+from extensions import db
+from models.models import MenuDelDiaDB, UsuarioDB # Importa UsuarioDB para el decorador
 from utils.decorators import admin_required # Asumiendo que admin_required está aquí
 
 menu_del_dia_bp = Blueprint('menu_del_dia_bp', __name__)
