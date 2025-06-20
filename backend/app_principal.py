@@ -40,7 +40,7 @@ def create_app():
                 tipo_usuario=TipoUsuario.ADMIN
             )
             new_admin.set_password(admin_password)
-
+            
             db.session.add(new_admin)
             db.session.commit()
             print(f"Usuario administrador '{admin_email}' creado con éxito.")

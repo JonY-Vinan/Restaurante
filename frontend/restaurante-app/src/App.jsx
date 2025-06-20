@@ -10,6 +10,7 @@ function App() {
         <Link to="/">Inicio</Link>
         <Link to="/menu">Menú</Link>
       </nav>
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/menu" element={<Menu />} />

@@ -9,6 +9,7 @@ class TipoUsuario(PythonEnum):
     CLIENTE = "CLIENTE" # <--- Cambiado a mayúsculas
     EMPLEADO = "EMPLEADO"
 
+
 class UsuarioDB(db.Model):
     __tablename__ = 'usuario'
     
